@@ -12,7 +12,6 @@ import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined
 import { Entrada, EntradaStatus } from "@/interfaces";
 import { getEntradaPorId } from '@/database/dbEntradas';
 import { EntradasContext } from '@/context/entradas';
-import { useRouter } from 'next/router';
 import { getFormatDistanceToNow } from '@/utils/dateFunctions';
 
 
@@ -33,8 +32,7 @@ const EntradaPage:FC<Props> = ( { entrada } ) => {
     const [status,setStatus] = useState<EntradaStatus>( entrada.status ); //Le digo que va a ser de tipo EntradaStatus, inicialmente es el entrada.status que viene
     const [touched,setTouched] = useState(false);
 
-    const { actualizarStatusEntrada } = useContext( EntradasContext ); //Funcion para actualizar una entrada, que recibe la entrada 
-    const router = useRouter();
+    const { actualizarStatusEntrada,borrarTarea } = useContext( EntradasContext ); //Funcion para actualizar una entrada, que recibe la entrada 
     const cambiandoInputTextField = (event:ChangeEvent<HTMLInputElement>) => {
         setInputValue(event.target.value)
     }
@@ -62,9 +60,6 @@ const EntradaPage:FC<Props> = ( { entrada } ) => {
       actualizarStatusEntrada( actualizarEntry ); //Mando esta entrada al backend
     }
 
-    const deleteTask = (id:string) => {
-      console.log(id);
-    }
   return (
      <Layout title={ inputValue.substring(0,20) + '...'}>
       <Grid
@@ -138,7 +133,7 @@ const EntradaPage:FC<Props> = ( { entrada } ) => {
         backgroundColor:'error.dark'
       }}>
         <DeleteOutlineOutlinedIcon 
-        onClick={ () => deleteTask(entrada._id) }
+         onClick = {() => borrarTarea( entrada._id )}
         />
       </IconButton>
      </Layout>

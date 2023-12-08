@@ -10,6 +10,6 @@ interface ContextProps {
     entradas : Entrada[]; 
     addEntry: (description: string) => void;
     actualizarStatusEntrada: (entrada: Entrada) => void;
-    // borrarTarea: (id: string) => Promise<void>
+    borrarTarea: (id: string) => Promise<void>;
 }
 export const EntradasContext = createContext({} as ContextProps); //Debo decirle que va a proveer el provider, como luce ese contexto

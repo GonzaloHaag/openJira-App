@@ -13,7 +13,7 @@ type EntradasActionType =
  */
 | { type: '[Entrada] ActualizarStatus - entrada', payload:Entrada} 
 | { type: '[Entrada] Refrescar - data',payload:Entrada[]}
-//| { type: '[Entrada] Borrar - Tarea',payload:string} //Que me manden el ID de la tarea
+| { type: '[Entrada] Borrar - tarea',payload:string } //Necesito el id de la tarea a borrar
 
 
 //El reducer recibe el estado que va a ser de tipo EntradasEstado y el action, que va a tener el action.type que va a lucir de la forma que declaramos en el type EntradasActionType
@@ -58,16 +58,14 @@ export const entriesReducer = (state : EntradasEstado,action:EntradasActionType)
                 ...state,
                 entradas : [...action.payload]
             }
+
+        //Para borrar tarea debo devolver el array de entradas sin la tarea que recibo(que lo recibo en el action.payload)
+        case '[Entrada] Borrar - tarea':
+            return { 
+                ...state,
+                entradas : [...state.entradas.filter((task) => task._id !== action.payload)]
+            }
         
-        //Para borrar una tarea desde el detalle
-        // case '[Entrada] Borrar - Tarea':
-        //     return{
-        //         ...state,
-        //         /**Quiero retornar el arreglo de entradas pero sin la entrada que se borro, le hago un filter al estado.entradas 
-        //          * y me quedo con todas menos con la que me pasan por el payload(que es la que quiero borrar)
-        //          */
-        //         entradas: [...state.entradas.filter((task) => task._id !== action.payload)]
-        //     }
 
             default:
                 return state; //Esto siempre

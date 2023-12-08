@@ -5,7 +5,6 @@
  * delete para borrarla
  * Este archivo es para el endpoint /api/entradas/idTarea
  */
-import entradasApi from "@/apis/entradasApi";
 import { db } from "@/database";
 import entradaModel, { IEntrada } from "@/models/Entrada";
 import mongoose from "mongoose";
@@ -35,9 +34,9 @@ export default function handler(
         /**Devolver la entrada que me estan pidiendo por url(endpoint) */
       return obtenerEntrada(req,res);
 
-   /**  case 'DELETE' :
-      /**Para borrar una tarea con el id que me manden, Hacerlo solo 
-      return borrarTarea(req, res); */
+    case "DELETE" :
+      return borrarTarea(req,res);
+
     default:
       return res.status(400).json({ message: "El metodo no existe" });
   }
@@ -100,22 +99,12 @@ const obtenerEntrada = async(req:NextApiRequest,res:NextApiResponse<Data>) => {
     return res.status(200).json( entradaBuscada ); //Devuelvo la entrada buscada por ID si existe en mi base de datos
 }
 
-// const borrarTarea = async(req:NextApiRequest,res:NextApiResponse<Data>) => {
-
-//   const { id } = req.query; //Obtengo el id que viene en la URL para saber que tarea borrar
-//   await db.connect();
-//   const entradaPorBorrar = await entradaModel.findById(id);
-//   await db.disconnect();
-//   if ( !entradaPorBorrar ) {
-//     return res.status(400).json({message:'No existe entrada con el ID: ' + id})
-//   }
-//   try {
-//     await entradaModel.findByIdAndDelete( id ); //Voy a borrar la tarea por ese ID, el metodo ya me lo trae
-//     await db.disconnect();
-    
-//   } catch (error:any) {
-//     await db.disconnect();
-//     res.status(400).json({ message:'Error' })
-//     }
-//   return res.status(200).json({message:'Tarea borrada exitosamente'})
-// }
+/**Para borrar una tarea, no devuelvo nada porque la tarea se elimino, no tengo nada por retornar */
+const borrarTarea = async(req:NextApiRequest,res:NextApiResponse<Data>) => {
+  const { id } = req.query; //obtengo el id que viene por url
+  await db.connect();
+  await entradaModel.findByIdAndDelete( id );
+  await db.disconnect();
+  res.status(200).json({ message:'Tarea eliminada correctamente' })
+ 
+}

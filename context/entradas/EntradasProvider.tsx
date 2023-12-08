@@ -2,7 +2,8 @@ import { FC, useEffect, useReducer } from 'react';
 import { EntradasContext,entriesReducer} from '.';
 import { Entrada } from '@/interfaces';
 import entradasApi from '@/apis/entradasApi';
-import { useSnackbar } from 'notistack'
+import { useSnackbar } from 'notistack';
+import { useRouter } from 'next/router';
 interface EntradasProviderProps{
     children?: JSX.Element | JSX.Element[]
 }
@@ -23,6 +24,7 @@ export const EntradasProvider: FC<EntradasProviderProps> = ({ children }) => {
     //Recibe el reducer y el estado inicial de las entradas()
     const [state, dispatch] = useReducer(entriesReducer, ENTRADAS_INITIAL_STATE);
     const { enqueueSnackbar } = useSnackbar();
+    const router = useRouter();
     /**Funcion para agregar entrada que va a recibir la 
      * descripcion de la tarea que es de tipo string
      */
@@ -97,26 +99,26 @@ export const EntradasProvider: FC<EntradasProviderProps> = ({ children }) => {
     
     }, []);
 
-    // const borrarTarea = async(id:string) => {
-    //     /**Hago la peticion http con el metodo delete con el id que me mandan */
-    //   await entradasApi.delete<Entrada[]>(`/entradas/${ id }`);
-    //   dispatch({ type:'[Entrada] Borrar - Tarea',payload:id });
-    //   enqueueSnackbar('Entrada borrada',{
-    //     variant:'warning',
-    //     autoHideDuration:1000,
-    //     anchorOrigin: {
-    //      /**Lo quiero arriba a la derecha */
-    //      vertical: 'top',
-    //      horizontal:'right'
-    //     }
-    //  })
-    // }
-    
+    const borrarTarea = async( id:string ) => {
+       await entradasApi.delete(`/entradas/${ id }`);
+       dispatch({ type:'[Entrada] Borrar - tarea',payload:id })
+       enqueueSnackbar('Entrada eliminada',{
+        variant:'warning',
+        autoHideDuration:1000,
+        anchorOrigin: {
+         /**Lo quiero arriba a la derecha */
+         vertical: 'top',
+         horizontal:'right'
+        }
+     });
+     router.push('/');
+    }
     return (
         <EntradasContext.Provider value={{
             ...state,
             addEntry,
             actualizarStatusEntrada,
+            borrarTarea,
         }}>
             {children}
         </EntradasContext.Provider>
